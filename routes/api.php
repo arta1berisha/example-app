@@ -29,7 +29,7 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/refresh', 'refresh')->middleware(IfAuthenticated::class);
 });
 
-Route::group(['middleware' => IfAuthenticated::class], function () {
+// Route::group(['middleware' => IfAuthenticated::class], function () {
 
     Route::controller(UserController::class)->group(function () {
         Route::get('/users', 'index');
@@ -38,8 +38,6 @@ Route::group(['middleware' => IfAuthenticated::class], function () {
         Route::delete('/users/{id}', 'destroy');
     });
 
-    Route::resource('category', CategoryController::class);
-
     Route::controller(ProductController::class)->group(function () {
         Route::post('/products', 'create');
         Route::get('/products', 'index');
@@ -47,4 +45,13 @@ Route::group(['middleware' => IfAuthenticated::class], function () {
         Route::put('/products/{id}', 'update');
         Route::delete('/products/{id}', 'destroy');
     });
-});
+
+
+    Route::controller(CategoryController::class)->group(function () {
+        Route::post('/category', 'create')->middleware(IfAuthenticated::class);;
+        Route::get('/category', 'index')->middleware(IfAuthenticated::class);;
+        Route::get('/category/{id}', 'show')->middleware(IfAuthenticated::class);;
+        Route::put('/category/{id}', 'update')->middleware(IfAuthenticated::class);;
+        Route::delete('/category/{id}', 'destroy')->middleware(IfAuthenticated::class);;
+        Route::get('.category/{id}/products', 'products')->middleware(IfAuthenticated::class);;
+    });
