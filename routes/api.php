@@ -29,29 +29,32 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/refresh', 'refresh')->middleware(IfAuthenticated::class);
 });
 
-// Route::group(['middleware' => IfAuthenticated::class], function () {
+Route::group(['middleware' => 'auth.jwt'], function () {
 
     Route::controller(UserController::class)->group(function () {
         Route::get('/users', 'index');
-        Route::get('/users/{id}', 'show');
-        Route::put('/users/{id}', 'update');
-        Route::delete('/users/{id}', 'destroy');
+        Route::get('/users/{user}', 'show');
+        Route::put('/users/{user}', 'update');
+        Route::delete('/users/{user}', 'destroy');
     });
 
-    Route::controller(ProductController::class)->group(function () {
-        Route::post('/products', 'create');
-        Route::get('/products', 'index');
-        Route::get('/products/{id}', 'show');
-        Route::put('/products/{id}', 'update');
-        Route::delete('/products/{id}', 'destroy');
-    });
+    Route::prefix('admin')->middleware('auth.jwt')->group(function () {
 
-
-    Route::controller(CategoryController::class)->group(function () {
-        Route::post('/category', 'create')->middleware(IfAuthenticated::class);;
-        Route::get('/category', 'index')->middleware(IfAuthenticated::class);;
-        Route::get('/category/{id}', 'show')->middleware(IfAuthenticated::class);;
-        Route::put('/category/{id}', 'update')->middleware(IfAuthenticated::class);;
-        Route::delete('/category/{id}', 'destroy')->middleware(IfAuthenticated::class);;
-        Route::get('.category/{id}/products', 'products')->middleware(IfAuthenticated::class);;
+        Route::controller(ProductController::class)->group(function () {
+            Route::post('/products', 'store');
+            Route::get('/products', 'index');
+            Route::get('/products/{product}', 'show');
+            Route::put('/products/{product}', 'update');
+            Route::delete('/products/{product}', 'destroy');
+        });
+    
+        Route::controller(CategoryController::class)->group(function () {
+            Route::post('/categories', 'store');
+            Route::get('/categories', 'index');
+            Route::get('/categories/{category}', 'show');
+            Route::put('/categories/{category}', 'update');
+            Route::delete('/categories/{category}', 'destroy');
+            Route::get('/categories/{category}/products', 'products');
+        });
     });
+});
