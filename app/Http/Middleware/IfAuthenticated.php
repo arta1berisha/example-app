@@ -21,7 +21,6 @@ class IfAuthenticated
     public function handle($request, Closure $next, ...$roles)
     {
         try {
-
             $token = JWTAuth::parseToken();
 
             $user = $token->authenticate();
@@ -39,7 +38,7 @@ class IfAuthenticated
         if ($user) {
             return $next($request);
         }
-
+        
         return $this->unauthorized();
     }
 
