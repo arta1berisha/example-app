@@ -7,7 +7,7 @@ use App\Models\Product;
 
 class ProductController extends Controller
 {
-    public function create(Request $request)
+    public function store(Request $request)
     {
         return Product::create($request->all());
     }
@@ -17,21 +17,21 @@ class ProductController extends Controller
         return Product::all();
     }
 
-    public function show($id)
+    public function show(Product $product)
     {
-        return Product::find($id);
+        return Product::find($product);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Product $product)
     {
-        $product = Product::find($id);
+        $product = Product::find($product);
         $product->update($request->all());
         return $product;
     }
 
-    public function destroy($id)
+    public function destroy(Product $product)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::findOrFail($product);
         $product->delete();
 
         return 204;
