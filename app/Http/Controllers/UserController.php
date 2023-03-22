@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Users\UpdateUsersRequest;
 use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -21,16 +22,14 @@ class UserController extends Controller
         return User::find($user);
     }
 
-    public function update(Request $request, User $user)
+    public function update(UpdateUsersRequest $request, User $user)
     {
-        $user = User::find($user);
-        $user->update($request->all());
-        return $user;
+        $user->update($request->validated());
+        return new UserResource($user);
     }
 
-    public function destroy(Request $request, User $user)
+    public function destroy(User $user)
     {
-        $user = User::findOrFail($user);
         $user->delete();
 
         return 204;
