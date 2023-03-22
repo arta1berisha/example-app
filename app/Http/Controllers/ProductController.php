@@ -2,19 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Product;
+use Illuminate\Http\Request;
+use App\Http\Requests\Products\StoreProductsRequest;
+use App\Http\Requests\Products\UpdateProductsRequest;
+use App\Http\Resources\Product\ProductResource;
 
 class ProductController extends Controller
 {
-    public function store(Request $request)
+    public function store(StoreProductsRequest $request)
     {
-        return Product::create($request->all());
+        $product = Product::create($request->validated());
     }
 
     public function index()
     {
-        return Product::all();
+        $product = Product::all();
+
+        return ProductResource::collection($product);
     }
 
     public function show(Product $product)
@@ -22,16 +27,15 @@ class ProductController extends Controller
         return Product::find($product);
     }
 
-    public function update(Request $request, Product $product)
+    public function update(UpdateProductsRequest $request, Product $product)
     {
-        $product = Product::find($product);
-        $product->update($request->all());
-        return $product;
+
+        $product->update($request->validated());
+        return new ProductResource($product);
     }
 
-    public function destroy(Product $product)
+    public function destroy(Request $request, Product $product)
     {
-        $product = Product::findOrFail($product);
         $product->delete();
 
         return 204;

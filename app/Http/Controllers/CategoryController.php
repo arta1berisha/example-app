@@ -3,37 +3,40 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Category\StoreCategoryRequest;
+use App\Http\Requests\Products\UpdateProductsRequest;
+use App\Http\Resources\Category\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\Product;
 
 class CategoryController extends Controller
 {
-    public function index()
-    {
-        return Category::all();
-    }
 
     public function store(StoreCategoryRequest $request)
     {
-        return Category::create($request->all());
+        $category = Category::create($request->validated());
+    }
+
+    public function index()
+    {
+        $category = Category::all();
+
+        return CategoryResource::collection($category);
     }
 
     public function show(Category $category)
     {
-        return $category;
+        return Category::find($category);
     }
 
-    public function update(Request $request, Category $category)
+    public function update(UpdateProductsRequest $request, Category $category)
     {
-        $category = Category::find($category);
-        $category->update($request->all());
-        return $category;
+        $category->update($request->validated());
+        return new CategoryResource($category);
     }
 
     public function destroy(Category $category)
     {
-        $category = Category::findOrFail($category);
         $category->delete();
 
         return 204;
