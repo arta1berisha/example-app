@@ -34,7 +34,7 @@ class ProductController extends Controller
         return new ProductResource($product);
     }
 
-    public function destroy(Request $request, Product $product)
+    public function destroy(Product $product)
     {
         $product->delete();
 
