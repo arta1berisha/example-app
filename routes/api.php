@@ -38,8 +38,6 @@ Route::group(['middleware' => 'auth.jwt'], function () {
         Route::delete('/users/{user}', 'destroy');
     });
 
-    Route::prefix('admin')->middleware('auth.jwt')->group(function () {
-
         Route::controller(ProductController::class)->group(function () {
             Route::post('/products', 'store');
             Route::get('/products', 'index');
@@ -57,4 +55,4 @@ Route::group(['middleware' => 'auth.jwt'], function () {
             Route::get('/categories/{category}/products', 'products');
         });
     });
-});
+
