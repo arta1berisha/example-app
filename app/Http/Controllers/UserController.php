@@ -12,14 +12,14 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::all();
+        $users = User::paginate();
 
         return UserResource::collection($users);
     }
 
     public function show(User $user)
     {
-        return User::find($user);
+        return new UserResource($user);
     }
 
     public function update(UpdateUsersRequest $request, User $user)
@@ -30,8 +30,16 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        $user->delete();
+        if ($user->delete()) {
+            return response()->json([
+                'status' => true,
+                'message' => 'User deleted Successfully',
+            ], 204);
+        }
 
-        return 204;
+        return response()->json([
+            'status' => false,
+            'message' => 'Cannot delete User',
+        ], 400);
     }
 }

@@ -4,40 +4,50 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
-use App\Http\Requests\Products\StoreProductsRequest;
-use App\Http\Requests\Products\UpdateProductsRequest;
+use App\Http\Requests\Products\StoreProductRequest;
+use App\Http\Requests\Products\UpdateProductRequest;
 use App\Http\Resources\Product\ProductResource;
 
 class ProductController extends Controller
 {
-    public function store(StoreProductsRequest $request)
-    {
-        $product = Product::create($request->validated());
-    }
-
     public function index()
     {
-        $product = Product::all();
+        $product = Product::paginate();
 
         return ProductResource::collection($product);
     }
 
-    public function show(Product $product)
+    public function store(StoreProductRequest $request)
     {
-        return Product::find($product);
+        $product = Product::create($request->validated());
+
+        return new ProductResource($product);
     }
 
-    public function update(UpdateProductsRequest $request, Product $product)
+    public function show(Product $product)
     {
+        return new ProductResource($product);
+    }
 
+    public function update(UpdateProductRequest $request, Product $product)
+    {
         $product->update($request->validated());
+
         return new ProductResource($product);
     }
 
     public function destroy(Product $product)
     {
-        $product->delete();
+       if ($product->delete()) {
+        return response()->json([
+            'status' => true,
+            'message' => 'Product deleted successfully',
+        ], 204);
+       }
 
-        return 204;
+        return response()->json([
+            'status' => false,
+            'message' => 'Cannot delete Product',
+        ], 400);
     }
 }
